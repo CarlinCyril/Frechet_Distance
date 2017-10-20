@@ -13,8 +13,8 @@
 
 uint distance(Coordonates p1, Coordonates p2);
 
-uint frechet_recursive(uint i, uint j);
+int frechet_recursive(uint i, uint j, int **matrix, Coordonates *p, Coordonates *q);
 
-uint frechetDistance(Coordonates *p, Coordonates *q);
+int frechetDistance(Coordonates *p, Coordonates *q, int lengthP, int lengthQ);
 
 #endif /* frechet_h */
