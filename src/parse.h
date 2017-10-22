@@ -17,6 +17,6 @@ typedef struct Coordonates
     int y;
 } Coordonates;
 
-void parse(FILE *file, Coordonates *P, Coordonates *Q, int n, int m);
+void parse(char *filename, Coordonates *P, Coordonates *Q, int *n, int *m);
 
 #endif /* parse_h */
