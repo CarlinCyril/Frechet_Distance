@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "frechet.h"
+#include <stdlib.h>
 
 int main(int argc, const char * argv[]) {
     Coordonates u1;
@@ -61,7 +62,10 @@ int main(int argc, const char * argv[]) {
     Coordonates p[7] = {u1, u2, u3, u4, u5,u6, u7};
     Coordonates q[8] = {v1, v2, v3, v4, v5, v6, v7, v8};
     
-    int x = frechetDistance(p, q, 7, 8);
-    printf("Résultat : %d\n", x);
+    
+    
+//    int x = frechetDistance(p, q, 7, 8);
+    printf("Résultat non optim : %d\n", frechet());
+//    printf("Résultat optim : %d\n", frechet());
     return 0;
 }
