@@ -18,6 +18,8 @@ uint distance(Coordonates p1, Coordonates p2)
     return((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
 }
 
+// Version naïve de l'algorithme
+// frechetDistance appelle frechet_recursive et initialise la matrice
 int frechetDistance(Coordonates *p, Coordonates *q, int lengthP, int lengthQ)
 {
     int **distanceMatrix = malloc(lengthP * sizeof(int *));
@@ -32,9 +34,10 @@ int frechetDistance(Coordonates *p, Coordonates *q, int lengthP, int lengthQ)
     return frechet_recursive(lengthP - 1, lengthQ - 1, distanceMatrix, p, q);
 }
 
+// Version naïve de l'algorithme
+// frechet_recursive applique la relation de Bellman
 int frechet_recursive(uint i, uint j, int **matrix, Coordonates *p, Coordonates *q)
 {
-    //printf("i : %d ; j : %d\n", i, j);
     if (matrix[i][j] > -1)
         return matrix[i][j];
     else if(i==0 && j==0)
@@ -50,9 +53,11 @@ int frechet_recursive(uint i, uint j, int **matrix, Coordonates *p, Coordonates 
 
 }
 
+// Version optimisée de l'algorithme
+// frechet_rec découpe la matrice en blocs plus petit qui doivent pouvoir être contenus dans le cache (de manière récursive)
 void frechet_rec(int *matrix, uint i1, uint i2, uint j1, uint j2, Coordonates *p, Coordonates *q, int lengthP, int lengthQ)
 {
-    if((i2 - i1)*(j2 - j1) < 256)
+    if((i2 - i1)*(j2 - j1) < 128)
     {
         frechet_optim(matrix, i1, i2, j1, j2, p, q, lengthP, lengthQ);
     }
@@ -67,6 +72,8 @@ void frechet_rec(int *matrix, uint i1, uint i2, uint j1, uint j2, Coordonates *p
     }
 }
 
+// Version optimisée de l'algorithme
+// frechet_optim applique la relation de Bellman
 void frechet_optim(int *matrix, uint i1, uint i2, uint j1, uint j2, Coordonates *p, Coordonates *q, int lengthP, int lengthQ)
 {
     for (uint i = i1; i < i2; i++) {
@@ -83,6 +90,8 @@ void frechet_optim(int *matrix, uint i1, uint i2, uint j1, uint j2, Coordonates 
     }
 }
 
+// frechet est la fonction finale qui appelle l'une des version de l'agorithme
+// Elle renvoie le résultat final sous forme d'un int
 int frechet()
 {
     Coordonates **p1 = malloc(sizeof(Coordonates *));
