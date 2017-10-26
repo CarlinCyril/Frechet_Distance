@@ -20,9 +20,9 @@ uint distance(Coordonates p1, Coordonates p2)
 
 // Version naïve de l'algorithme
 // frechetDistance appelle frechet_recursive et initialise la matrice
-int frechetDistance(Coordonates *p, Coordonates *q, int lengthP, int lengthQ)
+int frechetDistance(int **distanceMatrix, Coordonates *p, Coordonates *q, int lengthP, int lengthQ)
 {
-    int **distanceMatrix = malloc(lengthP * sizeof(int *));
+//    int **distanceMatrix = malloc(lengthP * sizeof(int *));
     
     for (int i = 0; i < lengthP; i++) {
         distanceMatrix[i] = malloc(lengthQ * sizeof(int));
@@ -90,22 +90,63 @@ void frechet_optim(int *matrix, uint i1, uint i2, uint j1, uint j2, Coordonates 
     }
 }
 
+//Calcul du parcours optimal
+void parcours_optimal(int **matrix, int distanceFrechet, int i, int j, int *parcours, int k)
+{
+    parcours[k] = i;
+    parcours[k] = j;
+    
+    if(i == 0 && j > 0)
+    {
+        parcours_optimal(matrix, distanceFrechet, i, j-1, parcours, k+1);
+    }
+    else if (i > 0 && j == 0)
+    {
+        parcours_optimal(matrix, distanceFrechet, i-1, j, parcours, k+1);
+    }
+    else if (i > 0 && j > 0)
+    {
+        if (matrix[i-1][j] <= matrix[i][j])
+            parcours_optimal(matrix, distanceFrechet, i-1, j, parcours, k+1);
+        else if (matrix[i-1][j-1] < matrix[i][j])
+            parcours_optimal(matrix, distanceFrechet, i-1, j-1, parcours, k+1);
+        else
+            parcours_optimal(matrix, distanceFrechet, i, j-1, parcours, k+1);
+    }
+}
+
 // frechet est la fonction finale qui appelle l'une des version de l'agorithme
 // Elle renvoie le résultat final sous forme d'un int
-int frechet()
+int frechet(char *filename)
 {
     Coordonates **p1 = malloc(sizeof(Coordonates *));
     Coordonates **q1 = malloc(sizeof(Coordonates *));
     int *n = malloc(sizeof(int));
     int *m = malloc(sizeof(int));
     
-    parse("../../../../Frechet/Frechet_Distance/Benchmark/benchmark2", p1, q1, n, m);
+    parse(filename, p1, q1, n, m);
+    
+    int **distanceMatrix = malloc(*n * sizeof(int *));
     
 //    int *mat = (int *)malloc((*n) * (*m) * sizeof(int));
     
 //    frechet_rec(mat, 0, *n, 0, *m, *p1, *q1, *n, *m);
     
-    return frechetDistance(*p1, *q1, *n, *m);
+    int *parcours = malloc(25 * sizeof(int));
+    int k = 0;
+    for (int i = 0; i < 25; i++) {
+        parcours[i] = -1;
+    }
+
+    int x = frechetDistance(distanceMatrix, *p1, *q1, *n, *m);
+    parcours_optimal(distanceMatrix, x, *n-1, *m-1, parcours, 0);
+    while (parcours[k] >= 0) {
+        printf("%d %d ", parcours[k], parcours[k+1]);
+        k+=2;
+    }
+    printf("\n");
+    
+    return x;
     
 //    return mat[(*n-1)*(*m)+(*m-1)];
 }
